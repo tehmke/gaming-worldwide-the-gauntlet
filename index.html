@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Gauntlet — Monthly Gaming Raffle</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f4f0;color:#1a1a18;min-height:100vh;padding:1.5rem 1rem;}
+  .container{max-width:560px;margin:0 auto;}
+  h1{font-size:22px;font-weight:500;margin-bottom:1.5rem;text-align:center;}
+  .card{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;}
+  .sec-label{font-size:12px;color:#666;font-weight:500;letter-spacing:.04em;margin:0 0 6px;}
+  input,button,select{font-family:inherit;font-size:14px;}
+  input[type=text],input[type=number],input[type=password]{width:100%;padding:8px 12px;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff;color:#1a1a18;outline:none;height:36px;}
+  input:focus{box-shadow:0 0 0 2px rgba(83,74,183,0.25);border-color:#534AB7;}
+  button{padding:8px 16px;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;background:transparent;color:#1a1a18;cursor:pointer;font-size:14px;transition:background .15s;}
+  button:hover{background:rgba(0,0,0,0.05);}
+  button:active{transform:scale(0.98);}
+  button:disabled{opacity:0.45;cursor:default;transform:none;}
+  .big-btn{width:100%;padding:14px;font-size:15px;font-weight:500;margin-top:.75rem;}
+  .tab-bar{display:flex;gap:6px;margin-bottom:1.25rem;}
+  .tab-btn{padding:6px 14px;font-size:13px;border-radius:20px;border:0.5px solid transparent;cursor:pointer;background:transparent;color:#666;}
+  .tab-btn.active{background:rgba(0,0,0,0.06);border-color:rgba(0,0,0,0.15);color:#1a1a18;font-weight:500;}
+  .arena{background:#f5f4f0;border-radius:12px;padding:1.5rem;text-align:center;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+  .challenge-title{font-size:18px;font-weight:500;}
+  .challenge-sub{font-size:13px;color:#666;}
+  .progress-wrap{width:100%;height:6px;background:rgba(0,0,0,0.1);border-radius:3px;overflow:hidden;}
+  .progress-fill{height:6px;border-radius:3px;background:#534AB7;transition:width .3s;}
+  .score-pill{font-size:13px;padding:4px 14px;border-radius:20px;background:#e6f1fb;color:#185FA5;font-weight:500;display:inline-block;}
+  .lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid rgba(0,0,0,0.08);}
+  .lb-row:last-child{border-bottom:none;}
+  .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;}
+  .target-zone{width:60px;height:60px;border-radius:50%;background:#EEEDFE;border:2px solid #534AB7;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#3C3489;font-weight:500;user-select:none;}
+  .mash-btn{padding:16px 40px;font-size:16px;font-weight:500;border-radius:8px;}
+  .scramble-opt{padding:8px 16px;margin:4px;border-radius:8px;font-size:13px;cursor:pointer;background:#f5f4f0;border:0.5px solid rgba(0,0,0,0.15);color:#1a1a18;}
+  .scramble-opt:hover{background:#fff;}
+  .grid-btn{width:52px;height:52px;border-radius:8px;border:none;cursor:pointer;transition:transform .1s;}
+  .grid-btn:active{transform:scale(.93);}
+  .simon-cmd{font-size:22px;font-weight:500;padding:12px 28px;border-radius:8px;margin:4px 0;background:#fff;border:0.5px solid rgba(0,0,0,0.15);}
+  .pts-flash{font-size:15px;font-weight:500;margin-top:8px;}
+  .tier-badge{font-size:11px;padding:2px 10px;border-radius:20px;font-weight:500;display:inline-block;margin-bottom:4px;}
+  .winner-badge{font-size:11px;padding:2px 8px;border-radius:20px;background:#E1F5EE;color:#085041;font-weight:500;}
+  .flex-row{display:flex;gap:8px;align-items:center;}
+  .admin-locked{text-align:center;padding:2rem 1rem;}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(83,74,183,0.2);border-top-color:#534AB7;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media(prefers-color-scheme:dark){
+    body{background:#1a1a18;color:#f0efe9;}
+    .card{background:#2a2a28;border-color:rgba(255,255,255,0.1);}
+    input[type=text],input[type=number],input[type=password]{background:#2a2a28;color:#f0efe9;border-color:rgba(255,255,255,0.2);}
+    button{color:#f0efe9;border-color:rgba(255,255,255,0.2);}
+    button:hover{background:rgba(255,255,255,0.08);}
+    .tab-btn{color:#999;}
+    .tab-btn.active{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);color:#f0efe9;}
+    .arena{background:#222220;}
+    .challenge-sub{color:#999;}
+    .sec-label{color:#999;}
+    .lb-row{border-bottom-color:rgba(255,255,255,0.08);}
+    .scramble-opt{background:#222220;border-color:rgba(255,255,255,0.15);color:#f0efe9;}
+    .scramble-opt:hover{background:#2a2a28;}
+    .simon-cmd{background:#2a2a28;border-color:rgba(255,255,255,0.15);}
+    .progress-wrap{background:rgba(255,255,255,0.1);}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>The Gauntlet</h1>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('play')">Play</button>
+    <button class="tab-btn" onclick="showTab('lb')">Leaderboard</button>
+    <button class="tab-btn" onclick="showTab('admin')">Admin</button>
+  </div>
+
+  <div id="tab-play">
+    <div class="card" id="screen-register">
+      <p class="sec-label">Your name</p>
+      <div class="flex-row">
+        <input id="playerName" type="text" placeholder="Enter your name to play..." onkeydown="if(event.key==='Enter')startOrResume()"/>
+        <button onclick="startOrResume()">Enter the gauntlet</button>
+      </div>
+      <div id="attemptStatus" style="margin-top:10px;min-height:20px;font-size:13px;"></div>
+    </div>
+    <div id="gameArea" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <span style="font-size:13px;color:#666;" id="challengeLabel">Challenge 1 of 3</span>
+        <span style="font-size:13px;font-weight:500;" id="runScore">Score: 0 / 300</span>
+      </div>
+      <div class="progress-wrap" style="margin-bottom:1rem;"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="arena" id="arena"></div>
+      <div id="betweenChallenge" style="display:none;text-align:center;margin-top:1rem;">
+        <button class="big-btn" id="nextChallengeBtn">Next challenge</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-lb" style="display:none;">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <p style="font-size:15px;font-weight:500;" id="lbMonthLabel">This month's leaderboard</p>
+        <span class="score-pill" id="lbCount">0 players</span>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:1rem;">
+        <button class="tab-btn active" id="lbTabCurrent" onclick="switchLbTab('current')" style="padding:4px 12px;font-size:12px;border-radius:20px;">This month</button>
+        <button class="tab-btn" id="lbTabAllTime" onclick="switchLbTab('alltime')" style="padding:4px 12px;font-size:12px;border-radius:20px;">All time</button>
+        <button onclick="loadLeaderboard()" style="margin-left:auto;font-size:12px;padding:4px 10px;">Refresh</button>
+      </div>
+      <div id="lbList"><div style="font-size:13px;color:#666;"><span class="spinner"></span>Loading...</div></div>
+    </div>
+  </div>
+
+  <div id="tab-admin" style="display:none;">
+    <div id="admin-locked" class="card admin-locked">
+      <p style="font-size:15px;font-weight:500;margin-bottom:1rem;">Admin access required</p>
+      <div class="flex-row" style="justify-content:center;">
+        <input id="adminPwInput" type="password" placeholder="Enter admin password..." style="max-width:240px;" onkeydown="if(event.key==='Enter')checkAdminPw()"/>
+        <button onclick="checkAdminPw()">Unlock</button>
+      </div>
+      <p id="adminPwError" style="font-size:13px;color:#E24B4A;margin-top:8px;min-height:18px;"></p>
+    </div>
+    <div id="admin-panel" style="display:none;">
+      <div class="card">
+        <p class="sec-label">Month label</p>
+        <div class="flex-row" style="margin-bottom:1rem;">
+          <input id="monthLabel" type="text" placeholder="e.g. April 2026"/>
+          <button onclick="saveMonth()">Save</button>
+        </div>
+        <p class="sec-label">Top 10 winners</p>
+        <div id="adminWinners" style="margin-bottom:1rem;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;">
+          <button onclick="copyWinners()">Copy winner list</button>
+          <button onclick="resetMonth()" style="color:#E24B4A;border-color:#E24B4A;">Reset month + clear scores</button>
+          <button onclick="resetAllTime()" style="color:#E24B4A;border-color:#E24B4A;">Reset all-time scores</button>
+        </div>
+        <div style="margin-top:1rem;border-top:0.5px solid rgba(0,0,0,0.1);padding-top:1rem;">
+          <button onclick="lockAdmin()" style="font-size:12px;color:#999;">Lock admin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SETUP: Paste your Apps Script Web App URL below.
+// Steps:
+// 1. Go to script.google.com and create a new project
+// 2. Paste the contents of gauntlet_apps_script.js
+// 3. Deploy > New deployment > Web app
+// 4. Execute as: Me, Who has access: Anyone
+// 5. Copy the Web App URL and paste it below
+// ============================================================
+const SHEET_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+// ============================================================
+
+const ADMIN_PW='gamingworldwide@block#1';
+const MAX_ATTEMPTS=3;
+let adminUnlocked=false;
+let lbData={current:[],allTime:[],monthLabel:''};
+let activeLbTab='current';
+
+const AVATAR_COLORS=[['#EEEDFE','#3C3489'],['#E1F5EE','#085041'],['#FAECE7','#712B13'],['#E6F1FB','#0C447C'],['#FAEEDA','#633806'],['#FBEAF0','#72243E'],['#EAF3DE','#27500A'],['#FCEBEB','#791F1F']];
+
+const GAME_TITLES=['Minecraft','Fortnite','Valorant','Overwatch','Terraria','Cyberpunk','Warzone','Hades','Celeste','Stardew','Hollow Knight','Among Us','Rust','Palworld','Elden Ring','Skyrim','Destiny 2','League of Legends','Dead by Daylight','Fall Guys','Apex Legends','Path of Exile','Rainbow Six Siege','Deep Rock Galactic','No Mans Sky','Monster Hunter','Rocket League','Sea of Thieves','Baldurs Gate','Lethal Company','Satisfactory','Phasmophobia','Splitgate','Grounded','Bloodborne','Undertale','Cuphead','Disco Elysium','Control','Outriders'];
+
+const PHRASES=['press F to pay respects','git gud or go home','have you tried turning it off and on again','the cake is a lie','all your base are belong to us','stay a while and listen','its dangerous to go alone','do a barrel roll','you died','a winner is you','would you kindly','war never changes','wake me when you need me','what is a man a miserable little pile of secrets','its super effective','praise the sun','kept you waiting huh','the numbers mason what do they mean','you have died of dysentery','stay frosty','do you feel in charge','the floor is lava','respawning in three two one','this is fine everything is fine','get over here','hadouken','finish him','player two has entered the game','i used to be an adventurer like you then i took an arrow in the knee','snakes on a plane wait wrong franchise'];
+
+const SIMON_COMMANDS=[
+  {text:'Jump!',isSimon:true},{text:'Crouch!',isSimon:false},{text:'Simon says duck!',isSimon:true},{text:'Simon says spin!',isSimon:true},{text:'Reload!',isSimon:false},{text:'Simon says press A!',isSimon:true},{text:'Respawn!',isSimon:false},{text:'Simon says gg!',isSimon:true},{text:'Rage quit!',isSimon:false},{text:'Simon says heal!',isSimon:true},{text:'Sprint!',isSimon:false},{text:'Simon says dodge!',isSimon:true},{text:'Taunt!',isSimon:false},{text:'Simon says emote!',isSimon:true},{text:'Loot!',isSimon:false},{text:'Simon says ping!',isSimon:true},{text:'Revive!',isSimon:false},{text:'Simon says swap weapons!',isSimon:true},{text:'Panic!',isSimon:false},{text:'Simon says go go go!',isSimon:true},{text:'Buy something!',isSimon:false},{text:'Simon says back to base!',isSimon:true},{text:'Logout!',isSimon:false},{text:'Simon says ult!',isSimon:true},{text:'Report a bug!',isSimon:false},{text:'Simon says carry harder!',isSimon:true},{text:'Uninstall!',isSimon:false},{text:'Simon says touch grass!',isSimon:true},{text:'Alt F4!',isSimon:false},{text:'Simon says one more game!',isSimon:true}
+];
+
+const MEMORY_TIERS=[
+  {label:'Easy',pads:3,seqLen:3,colors:['#534AB7','#1D9E75','#D85A30'],letters:'ABC',basePoints:70},
+  {label:'Medium',pads:4,seqLen:4,colors:['#534AB7','#1D9E75','#D85A30','#185FA5'],letters:'ABCD',basePoints:85},
+  {label:'Hard',pads:5,seqLen:5,colors:['#534AB7','#1D9E75','#D85A30','#185FA5','#BA7517'],letters:'ABCDE',basePoints:100},
+];
+const TIER_STYLES=[{bg:'#E1F5EE',color:'#085041'},{bg:'#FAEEDA',color:'#633806'},{bg:'#FCEBEB',color:'#791F1F'}];
+
+let state={name:'',runScore:0,challengeIdx:0,challenges:[],phase:'idle'};
+
+// ---- API ----
+async function apiGet(params){
+  const url=SHEET_URL+'?'+new URLSearchParams(params);
+  const r=await fetch(url,{redirect:'follow'});
+  return r.json();
+}
+async function apiPost(body){
+  const r=await fetch(SHEET_URL,{method:'POST',body:JSON.stringify(body),redirect:'follow'});
+  return r.json();
+}
+
+// ---- LOCAL ATTEMPT TRACKING ----
+function getLocalAttempts(name){
+  try{const d=JSON.parse(localStorage.getItem('gauntlet_attempts_v1')||'{}');return d[name.toLowerCase()]||0;}catch(e){return 0;}
+}
+function incrementLocalAttempts(name){
+  try{const k='gauntlet_attempts_v1';const d=JSON.parse(localStorage.getItem(k)||'{}');d[name.toLowerCase()]=(d[name.toLowerCase()]||0)+1;localStorage.setItem(k,JSON.stringify(d));}catch(e){}
+}
+function clearLocalAttempts(){
+  try{localStorage.removeItem('gauntlet_attempts_v1');}catch(e){}
+}
+
+// ---- TABS ----
+function showTab(t){
+  ['play','lb','admin'].forEach(id=>document.getElementById('tab-'+id).style.display=id===t?'block':'none');
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',['play','lb','admin'][i]===t));
+  if(t==='lb')loadLeaderboard();
+  if(t==='admin'&&adminUnlocked)loadAdminData();
+}
+
+function switchLbTab(tab){
+  activeLbTab=tab;
+  document.getElementById('lbTabCurrent').classList.toggle('active',tab==='current');
+  document.getElementById('lbTabAllTime').classList.toggle('active',tab==='alltime');
+  renderLB();
+}
+
+// ---- LEADERBOARD ----
+async function loadLeaderboard(){
+  document.getElementById('lbList').innerHTML='<div style="font-size:13px;color:#666;"><span class="spinner"></span>Loading...</div>';
+  try{
+    const data=await apiGet({action:'getLeaderboard'});
+    lbData=data;
+    if(data.monthLabel)document.getElementById('monthLabel').value=data.monthLabel;
+    renderLB();
+  }catch(e){
+    document.getElementById('lbList').innerHTML='<p style="font-size:13px;color:#E24B4A;">Could not load leaderboard. Check your SHEET_URL.</p>';
+  }
+}
+
+function renderLB(){
+  const list=document.getElementById('lbList');
+  const entries=activeLbTab==='current'?lbData.current:lbData.allTime;
+  const ml=lbData.monthLabel||'This month';
+  document.getElementById('lbMonthLabel').textContent=activeLbTab==='current'?ml+"'s leaderboard":'All-time leaderboard';
+  document.getElementById('lbCount').textContent=`${entries.length} player${entries.length!==1?'s':''}`;
+  if(!entries.length){list.innerHTML='<p style="font-size:13px;color:#666;">No scores yet.</p>';return;}
+  list.innerHTML=entries.map((e,i)=>{
+    const [bg,fg]=AVATAR_COLORS[i%AVATAR_COLORS.length];
+    const initials=e.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const isWinner=i<10;
+    return `<div class="lb-row"><span style="font-size:13px;color:#666;min-width:20px;">${i+1}</span><div class="avatar" style="background:${bg};color:${fg};">${initials}</div><span style="flex:1;font-size:14px;${isWinner?'font-weight:500;':''}">${e.name}</span>${isWinner?'<span class="winner-badge">winner</span>':''}<span style="font-size:13px;color:#666;margin-left:8px;">${e.bestScore}<span style="font-size:11px;"> / 300</span></span></div>`;
+  }).join('');
+}
+
+// ---- ADMIN ----
+function checkAdminPw(){
+  if(document.getElementById('adminPwInput').value===ADMIN_PW){
+    adminUnlocked=true;
+    document.getElementById('admin-locked').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    loadAdminData();
+  }else{
+    document.getElementById('adminPwError').textContent='Incorrect password.';
+    setTimeout(()=>document.getElementById('adminPwError').textContent='',2000);
+  }
+}
+function lockAdmin(){
+  adminUnlocked=false;
+  document.getElementById('admin-locked').style.display='block';
+  document.getElementById('admin-panel').style.display='none';
+  document.getElementById('adminPwInput').value='';
+}
+async function loadAdminData(){
+  if(!lbData.current.length)await loadLeaderboard();
+  renderAdminWinners();
+}
+function renderAdminWinners(){
+  const top=lbData.current.slice(0,10);
+  document.getElementById('adminWinners').innerHTML=top.length?top.map((e,i)=>`<div style="font-size:13px;padding:4px 0;border-bottom:0.5px solid rgba(0,0,0,0.08);">#${i+1} ${e.name} — ${e.bestScore}/300</div>`).join(''):'<p style="font-size:13px;color:#666;">No scores yet.</p>';
+}
+async function saveMonth(){
+  const label=document.getElementById('monthLabel').value;
+  await apiPost({action:'setMonth',password:ADMIN_PW,monthLabel:label});
+  lbData.monthLabel=label;renderLB();
+}
+async function resetMonth(){
+  if(!confirm('Reset current month scores? All-time records are kept. This cannot be undone.'))return;
+  const label=document.getElementById('monthLabel').value;
+  await apiPost({action:'resetMonth',password:ADMIN_PW,monthLabel:label});
+  clearLocalAttempts();
+  await loadLeaderboard();
+  renderAdminWinners();
+}
+async function resetAllTime(){
+  if(!confirm('Reset ALL-TIME scores? This permanently wipes the all-time leaderboard and cannot be undone.'))return;
+  if(!confirm('Are you absolutely sure? This cannot be reversed.'))return;
+  await apiPost({action:'resetAllTime',password:ADMIN_PW});
+  await loadLeaderboard();
+  renderAdminWinners();
+}
+function copyWinners(){
+  const ml=lbData.monthLabel||'This month';
+  const top=lbData.current.slice(0,10);
+  const lines=[`${ml} — Gauntlet Winners`,'',...top.map((e,i)=>`#${i+1} ${e.name} — ${e.bestScore}/300`)];
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{const btn=event.target;btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy winner list',2000);});
+}
+
+// ---- GAME ----
+function getPlayerEntry(name){return lbData.current.find(e=>e.name.toLowerCase()===name.toLowerCase());}
+function attemptsLeft(name){return MAX_ATTEMPTS-getLocalAttempts(name);}
+
+function startOrResume(){
+  const name=document.getElementById('playerName').value.trim();if(!name)return;
+  state.name=name;const left=attemptsLeft(name);
+  if(left<=0){document.getElementById('attemptStatus').innerHTML='<span style="color:#E24B4A;">No attempts left this month. Check the leaderboard!</span>';return;}
+  document.getElementById('screen-register').style.display='none';
+  document.getElementById('gameArea').style.display='block';
+  beginRun();
+}
+
+function beginRun(){
+  state.runScore=0;state.challengeIdx=0;state.challenges=pickChallenges();
+  document.getElementById('betweenChallenge').style.display='none';
+  document.querySelectorAll('#gameArea .big-btn.extra').forEach(b=>b.remove());
+  updateRunScore();loadChallenge();
+}
+
+const CHALLENGE_POOL=[
+  {id:'mole',fn:runMole},{id:'mash',fn:runMash},{id:'scramble',fn:runScramble},
+  {id:'memory',fn:runMemory},{id:'countdown',fn:runCountdown},{id:'nored',fn:runNoRed},
+  {id:'typeit',fn:runTypeIt},{id:'oddone',fn:runOddOne},{id:'holdit',fn:runHoldIt},{id:'simon',fn:runSimon}
+];
+
+function pickChallenges(){
+  const pool=[...CHALLENGE_POOL];const picked=[];
+  while(picked.length<3&&pool.length){const i=Math.floor(Math.random()*pool.length);picked.push(pool.splice(i,1)[0]);}
+  return picked;
+}
+
+function loadChallenge(){
+  const c=state.challenges[state.challengeIdx];
+  document.getElementById('challengeLabel').textContent=`Challenge ${state.challengeIdx+1} of 3`;
+  document.getElementById('progressFill').style.width=`${(state.challengeIdx/3)*100}%`;
+  document.getElementById('betweenChallenge').style.display='none';
+  const arena=document.getElementById('arena');arena.innerHTML='';
+  state.phase='playing';c.fn(arena);
+}
+
+function norm(raw,min,max){return Math.round(Math.max(0,Math.min(100,((raw-min)/(max-min))*100)));}
+
+function challengeDone(pts,label){
+  const capped=Math.max(0,Math.min(100,Math.round(pts)));
+  state.runScore+=capped;state.phase='between';updateRunScore();
+  const arena=document.getElementById('arena');
+  const msg=document.createElement('div');msg.className='pts-flash';
+  msg.style.color=capped>60?'#1D9E75':capped>30?'#BA7517':'#E24B4A';
+  msg.textContent=label||`+${capped} pts`;arena.appendChild(msg);
+  document.getElementById('betweenChallenge').style.display='block';
+  const isLast=state.challengeIdx>=2;
+  const btn=document.getElementById('nextChallengeBtn');
+  btn.textContent=isLast?'See my result':'Next challenge';
+  btn.onclick=isLast?finishRun:nextChallenge;
+  document.getElementById('progressFill').style.width=`${((state.challengeIdx+1)/3)*100}%`;
+}
+
+function nextChallenge(){state.challengeIdx++;loadChallenge();}
+function updateRunScore(){document.getElementById('runScore').textContent=`Score: ${state.runScore} / ${state.challengeIdx*100}`;}
+
+async function finishRun(){
+  const name=state.name,score=state.runScore;
+  incrementLocalAttempts(name);
+  const left=attemptsLeft(name);
+  const pct=Math.round((score/300)*100);
+  const arena=document.getElementById('arena');
+  arena.innerHTML=`<p class="challenge-title">Run complete!</p><p style="font-size:36px;font-weight:500;margin:0;">${score} <span style="font-size:16px;color:#666;">/ 300</span></p><p style="font-size:13px;color:#666;margin:0;">${pct>=80?'legendary run!':pct>=60?'solid performance!':pct>=40?'not bad!':'keep practicing!'}</p><p class="challenge-sub" id="saveStatus" style="margin-top:4px;"><span class="spinner"></span>Saving score...</p>`;
+  document.getElementById('betweenChallenge').style.display='none';
+  document.getElementById('progressFill').style.width='100%';
+  try{
+    await apiGet({action:'submitScore',name:name,score:score});
+    document.getElementById('saveStatus').textContent=`Score saved! ${left} attempt${left!==1?'s':''} left this month.`;
+  }catch(e){
+    document.getElementById('saveStatus').textContent='Could not save score — check your connection.';
+  }
+  const btn=document.createElement('button');btn.className='big-btn extra';
+  btn.textContent=left>0?`Try again (${left} left)`:'View leaderboard';
+  btn.onclick=left>0?()=>{arena.innerHTML='';beginRun();}:()=>showTab('lb');
+  document.getElementById('gameArea').appendChild(btn);
+}
+function runMole(arena){
+  let hits=0;const endTime=Date.now()+5000;let moleTimer=null;
+  arena.innerHTML=`<p class="challenge-title">Whack the mole!</p><p class="challenge-sub">Click it every time it appears!</p><div style="width:200px;height:120px;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:8px;position:relative;margin:8px 0;" id="moleField"></div><div style="display:flex;gap:24px;"><span style="font-size:13px;color:#666;">hits: <strong id="moleHits">0</strong></span><span style="font-size:13px;color:#666;">time: <strong id="moleClock">5.0</strong>s</span></div>`;
+  const field=arena.querySelector('#moleField');
+  function placeMole(){field.innerHTML='';const btn=document.createElement('div');btn.className='target-zone';btn.style.cssText='position:absolute;';btn.style.left=Math.floor(Math.random()*120)+'px';btn.style.top=Math.floor(Math.random()*40)+'px';btn.textContent='HIT';btn.onclick=()=>{hits++;arena.querySelector('#moleHits').textContent=hits;clearTimeout(moleTimer);placeMole();};field.appendChild(btn);moleTimer=setTimeout(placeMole,700+Math.random()*400);}
+  placeMole();
+  const iv=setInterval(()=>{const left=Math.max(0,(endTime-Date.now())/1000);const el=arena.querySelector('#moleClock');if(el)el.textContent=left.toFixed(1);if(left<=0){clearInterval(iv);clearTimeout(moleTimer);field.innerHTML='';const pts=norm(hits,0,12);challengeDone(pts,`+${pts} pts — ${hits} hits!`);}},100);
+}
+
+function runMash(arena){
+  let count=0;const endTime=Date.now()+4000;
+  arena.innerHTML=`<p class="challenge-title">Button masher!</p><p class="challenge-sub">Spam as fast as you can!</p><p style="font-size:36px;font-weight:500;margin:0;" id="mashCount">0</p><button class="mash-btn" id="mashBtn">MASH</button><span style="font-size:13px;color:#666;" id="mashClock">4.0s left</span>`;
+  const btn=arena.querySelector('#mashBtn');
+  const handler=()=>{count++;arena.querySelector('#mashCount').textContent=count;};
+  btn.addEventListener('click',handler);btn.addEventListener('touchstart',e=>{e.preventDefault();handler();});
+  const iv=setInterval(()=>{const left=Math.max(0,(endTime-Date.now())/1000);const el=arena.querySelector('#mashClock');if(el)el.textContent=left.toFixed(1)+'s left';if(left<=0){clearInterval(iv);btn.disabled=true;const pts=norm(count,0,60);challengeDone(pts,`+${pts} pts — ${count} presses!`);}},100);
+}
+
+function scrambleStr(s){return s.split('').sort(()=>Math.random()-.5).join('');}
+function runScramble(arena){
+  const correct=GAME_TITLES[Math.floor(Math.random()*GAME_TITLES.length)];
+  let scrambled=scrambleStr(correct.toUpperCase());
+  while(scrambled===correct.toUpperCase())scrambled=scrambleStr(correct.toUpperCase());
+  const opts=[correct];
+  while(opts.length<4){const r=GAME_TITLES[Math.floor(Math.random()*GAME_TITLES.length)];if(!opts.includes(r))opts.push(r);}
+  opts.sort(()=>Math.random()-.5);
+  const startTime=Date.now();
+  arena.innerHTML=`<p class="challenge-title">Unscramble the game!</p><p style="font-size:19px;font-weight:500;letter-spacing:3px;margin:4px 0;word-break:break-all;">${scrambled}</p><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;">${opts.map(o=>`<button class="scramble-opt" onclick="scrambleAnswer(this,'${o.replace(/'/g,"\\'")}','${correct.replace(/'/g,"\\'")}' )">${o}</button>`).join('')}</div><p style="font-size:12px;color:#999;margin-top:8px;">Faster = more points</p>`;
+  window._scrambleStart=startTime;
+}
+window.scrambleAnswer=function(btn,choice,correct){
+  document.querySelectorAll('.scramble-opt').forEach(b=>b.disabled=true);
+  if(choice===correct){const elapsed=(Date.now()-window._scrambleStart)/1000;const pts=elapsed<2?100:elapsed<4?85:elapsed<6?70:55;btn.style.background='#E1F5EE';btn.style.color='#085041';challengeDone(pts,`+${pts} pts — solved in ${elapsed.toFixed(1)}s!`);}
+  else{btn.style.background='#FCEBEB';btn.style.color='#791F1F';document.querySelectorAll('.scramble-opt').forEach(b=>{if(b.textContent===correct){b.style.background='#E1F5EE';b.style.color='#085041';}});challengeDone(0,'No points — wrong answer!');}
+};
+
+function runMemory(arena){
+  const tierIdx=Math.floor(Math.random()*MEMORY_TIERS.length);
+  const tier=MEMORY_TIERS[tierIdx];const ts=TIER_STYLES[tierIdx];
+  const seq=Array.from({length:tier.seqLen},()=>Math.floor(Math.random()*tier.pads));
+  let playerSeq=[];let showing=true;let mistakes=0;
+  function padSize(){return tier.pads<=3?80:tier.pads===4?72:60;}
+  function renderPads(enabled){const sz=padSize();const cols=tier.pads<=4?tier.pads:3;return `<div style="display:grid;grid-template-columns:repeat(${cols},1fr);gap:8px;width:${cols*(sz+8)}px;">${tier.colors.map((c,i)=>`<button style="width:${sz}px;height:${sz}px;background:${enabled?c:c+'55'};border:none;border-radius:8px;cursor:${enabled?'pointer':'default'};color:#fff;font-weight:500;font-size:14px;" id="pad${i}" onclick="memPad(${i})">${tier.letters[i]}</button>`).join('')}</div>`;}
+  arena.innerHTML=`<div class="tier-badge" style="background:${ts.bg};color:${ts.color};">${tier.label} — ${tier.seqLen} steps</div><p class="challenge-title">Remember the sequence!</p><p class="challenge-sub" id="memSub">Watch carefully...</p><div id="memPads">${renderPads(false)}</div>`;
+  let si=0;
+  function flashSeq(){if(si>=seq.length){showing=false;setTimeout(()=>{const sub=arena.querySelector('#memSub');if(sub)sub.textContent='Now repeat it!';const pads=arena.querySelector('#memPads');if(pads)pads.innerHTML=renderPads(true);},400);return;}const pad=arena.querySelector(`#pad${seq[si]}`);if(pad){pad.style.opacity='1';pad.style.transform='scale(1.15)';setTimeout(()=>{if(pad){pad.style.opacity='0.55';pad.style.transform='scale(1)';}si++;setTimeout(flashSeq,tier.pads>=5?250:300);},tier.pads>=5?380:450);}}
+  setTimeout(flashSeq,600);
+  window.memPad=function(i){if(showing)return;playerSeq.push(i);const idx=playerSeq.length-1;if(playerSeq[idx]!==seq[idx]){mistakes++;if(mistakes>=2){challengeDone(0,'No points — too many mistakes!');return;}const sub=arena.querySelector('#memSub');if(sub)sub.textContent='Wrong! One mistake left...';playerSeq=[];}else if(playerSeq.length===seq.length){const pts=mistakes===0?tier.basePoints:Math.round(tier.basePoints*0.5);challengeDone(pts,`+${pts} pts — ${tier.label.toLowerCase()} tier, ${mistakes===0?'perfect!':'one mistake!'}`);}};
+}
+
+function runCountdown(arena){
+  let started=false,startTime=0;
+  arena.innerHTML=`<p class="challenge-title">Stop the clock!</p><p class="challenge-sub">Hit stop as close to exactly 3.00 seconds as you can.</p><p style="font-size:44px;font-weight:500;margin:0;font-family:monospace;" id="cdDisplay">0.00</p><button class="mash-btn" id="cdBtn" onclick="cdAction()">Start</button>`;
+  let iv=null;
+  window.cdAction=function(){if(!started){started=true;startTime=Date.now();arena.querySelector('#cdBtn').textContent='Stop!';iv=setInterval(()=>{const el=arena.querySelector('#cdDisplay');if(el)el.textContent=((Date.now()-startTime)/1000).toFixed(2);},30);}else{clearInterval(iv);const elapsed=(Date.now()-startTime)/1000;const diff=Math.abs(elapsed-3.00);const pts=diff<0.05?100:diff<0.15?85:diff<0.3?65:diff<0.6?40:diff<1.0?20:5;arena.querySelector('#cdDisplay').textContent=elapsed.toFixed(2);arena.querySelector('#cdBtn').disabled=true;challengeDone(pts,`+${pts} pts — ${elapsed.toFixed(2)}s (target: 3.00s)`);}};
+}
+
+function runNoRed(arena){
+  let done=false;const endTime=Date.now()+6000;
+  const gridSize=16;const grid=Array.from({length:gridSize},()=>Math.random()<0.35?'red':'green');
+  const totalGreens=grid.filter(c=>c==='green').length;let greensLeft=totalGreens;let reds=0;
+  function renderGrid(){return `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:220px;">${grid.map((c,i)=>`<button class="grid-btn" id="gb${i}" style="background:${c==='green'?'#1D9E75':'#E24B4A'};" onclick="noRedClick(${i})"></button>`).join('')}</div>`;}
+  arena.innerHTML=`<p class="challenge-title">Don't click the red!</p><p class="challenge-sub">Click every green — avoid red!</p><div id="noRedGrid">${renderGrid()}</div><div style="display:flex;gap:24px;margin-top:8px;"><span style="font-size:13px;color:#666;">greens left: <strong id="nrScore">${totalGreens}</strong></span><span style="font-size:13px;color:#666;">time: <strong id="nrClock">6.0</strong>s</span></div>`;
+  window.noRedClick=function(i){if(done)return;const btn=document.getElementById('gb'+i);if(!btn||btn.disabled)return;if(grid[i]==='green'){greensLeft--;btn.style.background='#085041';btn.disabled=true;arena.querySelector('#nrScore').textContent=greensLeft;if(greensLeft===0){done=true;challengeDone(100,'+100 pts — all greens found!');}}else{reds++;btn.style.background='#791F1F';btn.disabled=true;}};
+  const iv=setInterval(()=>{const left=Math.max(0,(endTime-Date.now())/1000);const el=arena.querySelector('#nrClock');if(el)el.textContent=left.toFixed(1);if(left<=0&&!done){done=true;clearInterval(iv);const clicked=totalGreens-greensLeft;const pts=norm(clicked-(reds*2),0,totalGreens);challengeDone(pts,`+${pts} pts — ${clicked}/${totalGreens} greens, ${reds} reds hit`);}},100);
+}
+
+function runTypeIt(arena){
+  const phrase=PHRASES[Math.floor(Math.random()*PHRASES.length)];
+  const dur=10000;let finished=false;
+  const escaped=phrase.replace(/'/g,"\\'");
+  arena.innerHTML=`<p class="challenge-title">Type it fast!</p><p style="font-size:14px;font-weight:500;margin:4px 0;line-height:1.5;">${phrase}</p><input id="typeInput" type="text" placeholder="Start typing..." style="width:100%;margin-top:8px;" oninput="checkType('${escaped}')"/><div style="margin-top:8px;"><span style="font-size:13px;color:#666;">time: <strong id="typeClock">10.0</strong>s</span></div>`;
+  setTimeout(()=>{const inp=arena.querySelector('#typeInput');if(inp)inp.focus();},100);
+  const startTime=Date.now();
+  const iv=setInterval(()=>{const left=Math.max(0,(dur-(Date.now()-startTime))/1000);const el=arena.querySelector('#typeClock');if(el)el.textContent=left.toFixed(1);if(left<=0&&!finished){finished=true;clearInterval(iv);const val=(arena.querySelector('#typeInput')?.value||'').toLowerCase().trim();const acc=similarity(val,phrase);const pts=Math.round(acc*100);challengeDone(pts,`+${pts} pts — ${Math.round(acc*100)}% accuracy`);}},100);
+  window.checkType=function(target){if(finished)return;const val=(arena.querySelector('#typeInput')?.value||'').toLowerCase().trim();if(val===target){finished=true;clearInterval(iv);const elapsed=(Date.now()-startTime)/1000;const pts=elapsed<3?100:elapsed<5?90:elapsed<7?78:65;challengeDone(pts,`+${pts} pts — typed in ${elapsed.toFixed(1)}s!`);}};
+}
+function similarity(a,b){if(!b.length)return 0;let m=0;const len=Math.max(a.length,b.length);for(let i=0;i<Math.min(a.length,b.length);i++)if(a[i]===b[i])m++;return m/len;}
+
+function runOddOne(arena){
+  const shapes=['circle','square','triangle','diamond'];
+  const mainShape=shapes[Math.floor(Math.random()*shapes.length)];
+  let oddShape=mainShape;while(oddShape===mainShape)oddShape=shapes[Math.floor(Math.random()*shapes.length)];
+  const total=9,oddIdx=Math.floor(Math.random()*total);const startTime=Date.now();
+  function drawShape(type,size){const h=Math.round(size*0.866);if(type==='circle')return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:#534AB7;"></div>`;if(type==='square')return `<div style="width:${size}px;height:${size}px;background:#534AB7;border-radius:3px;"></div>`;if(type==='triangle')return `<div style="width:0;height:0;border-left:${Math.round(size/2)}px solid transparent;border-right:${Math.round(size/2)}px solid transparent;border-bottom:${h}px solid #534AB7;"></div>`;if(type==='diamond')return `<div style="width:${size}px;height:${size}px;background:#534AB7;transform:rotate(45deg);border-radius:2px;"></div>`;return '';}
+  arena.innerHTML=`<p class="challenge-title">Odd one out!</p><p class="challenge-sub">Find the shape that's different! Faster = more points.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:200px;">${Array.from({length:total},(_,i)=>`<button onclick="oddPick(${i},${i===oddIdx})" style="width:60px;height:60px;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;">${drawShape(i===oddIdx?oddShape:mainShape,28)}</button>`).join('')}</div>`;
+  window._oddStart=startTime;
+}
+window.oddPick=function(i,isOdd){
+  document.querySelectorAll('[onclick^="oddPick"]').forEach(b=>b.disabled=true);
+  if(isOdd){const elapsed=(Date.now()-window._oddStart)/1000;const pts=elapsed<1?100:elapsed<2?85:elapsed<4?70:55;document.querySelectorAll('[onclick^="oddPick"]')[i].style.background='#E1F5EE';challengeDone(pts,`+${pts} pts — found in ${elapsed.toFixed(1)}s!`);}
+  else{challengeDone(0,'No points — wrong one!');}
+};
+
+function runHoldIt(arena){
+  const target=2000+Math.floor(Math.random()*2000);let holding=false,startTime=0,done=false;
+  arena.innerHTML=`<p class="challenge-title">Hold your horses!</p><p class="challenge-sub">Hold until the bar fills — release at the right moment!</p><div style="width:220px;height:12px;background:rgba(0,0,0,0.1);border-radius:6px;overflow:hidden;margin:8px 0;"><div id="holdBar" style="height:12px;background:#534AB7;width:0%;border-radius:6px;"></div></div><p style="font-size:12px;color:#666;margin:0;" id="holdHint">Press and hold...</p><button id="holdBtn" style="padding:16px 40px;font-size:16px;font-weight:500;margin-top:8px;border-radius:8px;" onmousedown="holdStart()" onmouseup="holdEnd()" ontouchstart="event.preventDefault();holdStart()" ontouchend="holdEnd()">HOLD</button>`;
+  let iv=null;
+  window.holdStart=function(){if(done)return;holding=true;startTime=Date.now();iv=setInterval(()=>{if(!holding)return;const pct=Math.min(100,((Date.now()-startTime)/target)*100);const bar=arena.querySelector('#holdBar');if(bar)bar.style.width=pct+'%';},30);};
+  window.holdEnd=function(){if(done||!holding)return;done=true;holding=false;clearInterval(iv);const held=Date.now()-startTime;const diff=Math.abs(held-target);const bar=arena.querySelector('#holdBar');if(bar)bar.style.width=Math.min(100,(held/target)*100)+'%';const hint=arena.querySelector('#holdHint');if(hint)hint.textContent=`Held ${(held/1000).toFixed(2)}s (target: ${(target/1000).toFixed(2)}s)`;const btn=arena.querySelector('#holdBtn');if(btn)btn.disabled=true;const pts=diff<100?100:diff<250?85:diff<500?65:diff<800?40:diff<1200?20:5;challengeDone(pts,`+${pts} pts`);};
+}
+
+function runSimon(arena){
+  const rounds=5+Math.floor(Math.random()*4);let current=0,correct=0,done=false;
+  const sequence=[...SIMON_COMMANDS].sort(()=>Math.random()-.5).slice(0,rounds);
+  function showNext(){if(current>=rounds){done=true;const pts=norm(correct,0,rounds);challengeDone(pts,`+${pts} pts — ${correct}/${rounds} correct!`);return;}const cmd=sequence[current];arena.innerHTML=`<p class="challenge-title">Simon says...</p><p class="challenge-sub">Only react if Simon says to!</p><div class="simon-cmd">${cmd.text}</div><div style="display:flex;gap:10px;margin-top:12px;"><button onclick="simonAnswer(true)" style="flex:1;padding:12px;">React!</button><button onclick="simonAnswer(false)" style="flex:1;padding:12px;">Ignore</button></div><p style="font-size:12px;color:#999;margin-top:8px;">Round ${current+1} of ${rounds}</p>`;}
+  window.simonAnswer=function(reacted){if(done)return;const cmd=sequence[current];const isCorrect=(reacted&&cmd.isSimon)||(!reacted&&!cmd.isSimon);if(isCorrect)correct++;current++;setTimeout(showNext,300);};
+  showNext();
+}
+
+document.addEventListener('click',function(e){
+  const t=e.target.closest('button,div[onclick]');
+  if(!t)return;
+  const attr=t.getAttribute('onclick');
+  if(!attr)return;
+  try{
+    const fn=attr.replace(/\(.*\)/,'').trim();
+    const argsMatch=attr.match(/\(([^)]*)\)/);
+    const args=argsMatch&&argsMatch[1]?argsMatch[1].split(',').map(a=>{a=a.trim();if(a==='true')return true;if(a==='false')return false;if(!isNaN(a))return Number(a);return a.replace(/^['"]|['"]$/g,'');}):[]; 
+    if(window[fn])window[fn](...args);
+  }catch(err){}
+});
+</script>
+</body>
+</html>
